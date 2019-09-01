@@ -22,4 +22,10 @@
         android:name="net.lmlab.m_tsunami_android.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_info"
+        android:name="net.lmlab.m_tsunami_android.ui.info.InfoFragment"
+        android:label="@string/title_info"
+        tools:layout="@layout/fragment_info" />
 </navigation>
