@@ -3,24 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_alerts">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_alerts"
         android:name="net.lmlab.m_tsunami_android.ui.home.HomeFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_alerts"
         tools:layout="@layout/fragment_home" />
 
+    <!-- HinataFragment というクラスを作って実装してください -->
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_hinata"
+        android:name="net.lmlab.m_tsunami_android.ui.home.HomeFragment"
+        android:label="@string/title_hinata"
+        tools:layout="@layout/fragment_home" />
+
+    <!-- MapFragment というクラスを作って実装してください -->
+    <fragment
+        android:id="@+id/navigation_map"
         android:name="net.lmlab.m_tsunami_android.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_map"
         tools:layout="@layout/fragment_dashboard" />
 
+    <!-- InfoFragment というクラスを作って実装してください -->
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_info"
         android:name="net.lmlab.m_tsunami_android.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_info"
         tools:layout="@layout/fragment_notifications" />
 
     <fragment
