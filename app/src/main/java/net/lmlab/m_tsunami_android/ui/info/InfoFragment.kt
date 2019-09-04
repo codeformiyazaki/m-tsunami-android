@@ -24,6 +24,7 @@ class InfoFragment : Fragment() {
         infoViewModel =
             ViewModelProviders.of(this).get(InfoViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_info, container, false)
+
         val linkTextView: TextView = root.findViewById(R.id.text_info)
         infoViewModel.linkText.observe(this, Observer {
             linkTextView.text = it
@@ -32,6 +33,7 @@ class InfoFragment : Fragment() {
             val filter = Linkify.TransformFilter { _, _ -> githubUrl }
             Linkify.addLinks(linkTextView, pattern, githubUrl, null, filter)
         })
+
         val versionTextView: TextView = root.findViewById(R.id.text_version)
         infoViewModel.versionText.observe(this, Observer {
             versionTextView.text = it
