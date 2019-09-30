@@ -14,9 +14,9 @@
     <!-- HinataFragment というクラスを作って実装してください -->
     <fragment
         android:id="@+id/navigation_hinata"
-        android:name="net.lmlab.m_tsunami_android.ui.home.HomeFragment"
+        android:name="net.lmlab.m_tsunami_android.ui.hinata.HinataFragment"
         android:label="@string/title_hinata"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_hinata" />
 
     <!-- MapFragment というクラスを作って実装してください -->
     <fragment
