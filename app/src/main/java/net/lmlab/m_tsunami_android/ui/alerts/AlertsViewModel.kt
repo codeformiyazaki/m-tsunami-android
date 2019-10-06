@@ -13,10 +13,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 class AlertsViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is alerts Fragment"
-    }
-    val text: MutableLiveData<String> = MutableLiveData()
+    val titles: MutableLiveData<List<String>> = MutableLiveData()
 
     fun fetchAlertsFeed() {
         val retrofit = Retrofit.Builder()
@@ -29,11 +26,12 @@ class AlertsViewModel : ViewModel() {
         call.enqueue(object : Callback<FeedEntity> {
             override fun onResponse(call: Call<FeedEntity>?, response: Response<FeedEntity>?) {
                 val result = response?.body()
-                Log.d("hoge", result?.entities.toString())
-                text.postValue(result?.entities.toString())
+                // todo: Log は消そうぜ
                 result?.entities?.forEach {
-                    Log.d("hoge", it.title)
+                    Log.d("hoge", it.content)
                 }
+                val titleList = result?.entities?.map { it.content } as List<String>
+                titles.postValue(titleList)
             }
 
             override fun onFailure(call: Call<FeedEntity>?, t: Throwable?) {
