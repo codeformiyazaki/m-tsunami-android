@@ -12,6 +12,10 @@ import net.lmlab.m_tsunami_android.R
 
 class AlertsFragment : Fragment() {
 
+    companion object {
+        val BASE_URL = "https://www.data.jma.go.jp/"
+    }
+
     private lateinit var alertsViewModel: AlertsViewModel
 
     override fun onCreateView(
@@ -29,4 +33,10 @@ class AlertsFragment : Fragment() {
         return root
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+//        val text = findViewById(R.id.text) as TextView
+        alertsViewModel.fetchAlertsFeed()
+    }
 }
