@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">m-tsunami-android</string>
+    <string name="app_name">宮崎津波防災</string>
     <string name="title_alerts">Alerts</string>
     <string name="title_hinata">GIS</string>
     <string name="title_map">Map</string>
