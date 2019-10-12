@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import net.lmlab.m_tsunami_android.client.AlertsFeedClient
+import net.lmlab.m_tsunami_android.entity.EntryEntity
 import net.lmlab.m_tsunami_android.entity.FeedEntity
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,11 +14,15 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 
 class AlertsViewModel : ViewModel() {
 
-    val titles: MutableLiveData<List<String>> = MutableLiveData()
+    companion object {
+        val BASE_URL = "https://www.data.jma.go.jp/"
+    }
+
+    val titles: MutableLiveData<List<EntryEntity>> = MutableLiveData()
 
     fun fetchAlertsFeed() {
         val retrofit = Retrofit.Builder()
-            .baseUrl(AlertsFragment.BASE_URL)
+            .baseUrl(BASE_URL)
             .addConverterFactory(SimpleXmlConverterFactory.create())
             .build()
 
@@ -30,8 +35,8 @@ class AlertsViewModel : ViewModel() {
                 result?.entities?.forEach {
                     Log.d("hoge", it.content)
                 }
-                val titleList = result?.entities?.map { it.content } as List<String>
-                titles.postValue(titleList)
+                val filteredEntries = result?.entities?.filter { it.title.startsWith("噴火") || it.title.startsWith("震源") }
+                titles.postValue(filteredEntries)
             }
 
             override fun onFailure(call: Call<FeedEntity>?, t: Throwable?) {

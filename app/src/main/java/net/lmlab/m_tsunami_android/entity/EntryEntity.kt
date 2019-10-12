@@ -8,11 +8,11 @@ class EntryEntity {
 
     @set:Element(name = "title", required = true)
     @get:Element(name = "title", required = true)
-    var title: String? = null
+    var title: String = ""
 
-    @set:Element(name = "content", required = false)
-    @get:Element(name = "content", required = false)
-    var content: String? = null
+    @set:Element(name = "content", required = true)
+    @get:Element(name = "content", required = true)
+    var content: String = ""
 
     @set:Element(name = "updated", required = false)
     @get:Element(name = "updated", required = false)
