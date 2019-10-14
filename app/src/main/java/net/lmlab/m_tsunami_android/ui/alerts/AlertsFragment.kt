@@ -1,5 +1,6 @@
 package net.lmlab.m_tsunami_android.ui.alerts
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import net.lmlab.m_tsunami_android.R
+import net.lmlab.m_tsunami_android.ui.alerts.detail.AlertDetailActivity
 
 class AlertsFragment : Fragment() {
 
@@ -24,12 +26,14 @@ class AlertsFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_alerts, container, false)
 
         val listView = root.findViewById(R.id.list_alerts) as ListView
-        alertsViewModel.titles.observe(this, Observer {
+        alertsViewModel.entities.observe(this, Observer {
             val adapter = AlertsListAdapter(requireContext(), it)
             listView.adapter = adapter
             listView.setOnItemClickListener { parente, view, position, id ->
                 val timezone = adapter.getItem(position)
                 Toast.makeText(requireContext(), timezone.link, Toast.LENGTH_SHORT).show()
+                val intent = Intent(activity, AlertDetailActivity::class.java)
+                activity?.startActivity(intent)
             }
         })
 

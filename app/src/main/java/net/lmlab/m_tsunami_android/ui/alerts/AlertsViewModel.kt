@@ -18,7 +18,7 @@ class AlertsViewModel : ViewModel() {
         val BASE_URL = "https://www.data.jma.go.jp/"
     }
 
-    val titles: MutableLiveData<List<EntryEntity>> = MutableLiveData()
+    val entities: MutableLiveData<List<EntryEntity>> = MutableLiveData()
 
     fun fetchAlertsFeed() {
         val retrofit = Retrofit.Builder()
@@ -36,7 +36,7 @@ class AlertsViewModel : ViewModel() {
                     Log.d("hoge", it.content)
                 }
                 val filteredEntries = result?.entities?.filter { it.title.startsWith("噴火") || it.title.startsWith("震源") }
-                titles.postValue(filteredEntries)
+                entities.postValue(filteredEntries)
             }
 
             override fun onFailure(call: Call<FeedEntity>?, t: Throwable?) {
