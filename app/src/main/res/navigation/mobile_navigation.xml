@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_alerts"
-        android:name="net.lmlab.m_tsunami_android.ui.home.HomeFragment"
+        android:name="net.lmlab.m_tsunami_android.ui.alerts.AlertsFragment"
         android:label="@string/title_alerts"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_alerts" />
 
     <!-- HinataFragment というクラスを作って実装してください -->
     <fragment
@@ -23,7 +23,7 @@
         android:id="@+id/navigation_map"
         android:name="net.lmlab.m_tsunami_android.ui.dashboard.DashboardFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_alerts" />
 
     <!-- InfoFragment というクラスを作って実装してください -->
     <fragment
