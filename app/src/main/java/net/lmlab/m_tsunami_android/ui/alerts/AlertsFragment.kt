@@ -30,9 +30,9 @@ class AlertsFragment : Fragment() {
             val adapter = AlertsListAdapter(requireContext(), it)
             listView.adapter = adapter
             listView.setOnItemClickListener { parente, view, position, id ->
-                val timezone = adapter.getItem(position)
-                Toast.makeText(requireContext(), timezone.link, Toast.LENGTH_SHORT).show()
+                val entry = adapter.getItem(position)
                 val intent = Intent(activity, AlertDetailActivity::class.java)
+                intent.putExtra("uuid", entry.id)
                 activity?.startActivity(intent)
             }
         })

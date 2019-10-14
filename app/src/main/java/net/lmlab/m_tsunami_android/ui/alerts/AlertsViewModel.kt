@@ -31,16 +31,12 @@ class AlertsViewModel : ViewModel() {
         call.enqueue(object : Callback<FeedEntity> {
             override fun onResponse(call: Call<FeedEntity>?, response: Response<FeedEntity>?) {
                 val result = response?.body()
-                // todo: Log は消そうぜ
-                result?.entities?.forEach {
-                    Log.d("hoge", it.content)
-                }
                 val filteredEntries = result?.entities?.filter { it.title.startsWith("噴火") || it.title.startsWith("震源") }
                 entities.postValue(filteredEntries)
             }
 
             override fun onFailure(call: Call<FeedEntity>?, t: Throwable?) {
-                Log.d("hoge", "aaa")
+                Log.d("m_tsunami_android", t.toString())
             }
         })
     }
