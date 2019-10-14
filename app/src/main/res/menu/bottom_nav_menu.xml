@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_alerts"
-        android:icon="@drawable/ic_beacon"
-        android:title="@string/title_alerts" />
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/ic_map"
+        android:title="@string/title_map" />
 
     <item
         android:id="@+id/navigation_hinata"
@@ -12,9 +12,9 @@
         android:title="@string/title_hinata" />
 
     <item
-        android:id="@+id/navigation_map"
-        android:icon="@drawable/ic_map"
-        android:title="@string/title_map" />
+        android:id="@+id/navigation_alerts"
+        android:icon="@drawable/ic_beacon"
+        android:title="@string/title_alerts" />
 
     <item
         android:id="@+id/navigation_info"
