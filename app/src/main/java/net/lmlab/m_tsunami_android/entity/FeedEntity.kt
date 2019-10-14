@@ -23,6 +23,10 @@ class EntryEntity {
     @get:Element(name = "title", required = true)
     var title: String = ""
 
+    @set:Element(name = "id", required = true)
+    @get:Element(name = "id", required = true)
+    var id: String = ""
+
     @set:Element(name = "content", required = true)
     @get:Element(name = "content", required = true)
     var content: String = ""

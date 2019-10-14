@@ -8,4 +8,3 @@ interface AlertsFeedClient {
     @GET("developer/xml/feed/eqvol.xml")
     fun getEntry(): Call<FeedEntity>
 }
-
