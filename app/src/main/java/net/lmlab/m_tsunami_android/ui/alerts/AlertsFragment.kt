@@ -29,7 +29,7 @@ class AlertsFragment : Fragment() {
         alertsViewModel.entities.observe(this, Observer {
             val adapter = AlertsListAdapter(requireContext(), it)
             listView.adapter = adapter
-            listView.setOnItemClickListener { parente, view, position, id ->
+            listView.setOnItemClickListener { _, _, position, _ ->
                 val entry = adapter.getItem(position)
                 val intent = Intent(activity, AlertDetailActivity::class.java)
                 intent.putExtra("uuid", entry.id)
