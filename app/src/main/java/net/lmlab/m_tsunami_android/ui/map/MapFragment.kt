@@ -1,7 +1,6 @@
 package net.lmlab.m_tsunami_android.ui.map
 
 import android.Manifest
-import android.annotation.TargetApi
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -9,14 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-import androidx.core.content.PermissionChecker.checkPermission
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
 import androidx.core.app.ActivityCompat.requestPermissions
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.MarkerOptions
-
+import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
+import com.google.android.gms.maps.model.*
+import net.lmlab.m_tsunami_android.R
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -26,7 +23,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         if (googleMap != null) {
             this.googleMap = googleMap
-            doCheckPermission()
+            this.googleMap.setOnMarkerClickListener { marker : Marker ->
+                Log.d("m_tsunami_android", "setOnMarkerClickListener")
+                return@setOnMarkerClickListener true
+            }
+            checkPermission()
         }
     }
 
@@ -35,13 +36,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(net.lmlab.m_tsunami_android.R.layout.fragment_map, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_map, container, false)
 
         MapsInitializer.initialize(this.activity)
-        mapView = rootView.findViewById(net.lmlab.m_tsunami_android.R.id.mapView)
+        mapView = rootView.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this@MapFragment)
-
 
         return rootView
     }
@@ -81,32 +81,47 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onLowMemory()
     }
 
-    private fun doCheckPermission() {
+    // todo: なぜか呼ばれない
+    // 許可を求めるダイアログで何らかのボタンが押されたときに発生するイベント
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d("m_tsunami_android", "onRequestPermissionsResult")
+    }
+
+    private fun checkPermission() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10) //REQUEST_LOCATION
         } else {
-            Log.e("DB", "PERMISSION GRANTED")
-            // この５行を実行するとクラッシュ
-//            googleMap.isMyLocationEnabled = true
-//            googleMap.uiSettings.isMapToolbarEnabled = true
-//            val osakaStation = googleMap.getMyLocation()
-//            val myLatLng = LatLng(osakaStation.getLatitude(), osakaStation.getLongitude())
-//            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16.0f))
+            // 許可済でないとクラッシュする
+            googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMapToolbarEnabled = true
 
-            val sydney = LatLng(-34.0, 151.0)
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(sydney)             // 地図上のマーカーの位置
-                    .title("Marker in Sydney")    // マーカーをタップ時に表示するテキスト文字列
-                    .snippet("Australian cities") // タイトルの下に表示される追加のテキスト
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)) // アイコン
-            )
+            getLastLocation()
         }
     }
 
-    //許可を求めるダイアログで何らかのボタンが押されたときに発生するイベント
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.e("DB", "onRequestPermissionsResult")
+    fun getLastLocation() {
+        val locationClient = getFusedLocationProviderClient(requireActivity())
+        locationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                val latitude = location.latitude
+                val longitude = location.longitude
+                if (latitude != 0.0 && longitude != 0.0) {
+                    Log.d("m_tsunami_android", latitude.toString() + " " + longitude.toString())
+                    val myLatLng = LatLng(latitude, longitude)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 16.0f))
+                    val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_building)
+                    googleMap.addMarker(
+                        MarkerOptions()
+                            .position(myLatLng)           // 地図上のマーカーの位置
+                            .title("Marker in Sydney")    // マーカーをタップ時に表示するテキスト文字列
+                            .snippet("Australian cities") // タイトルの下に表示される追加のテキスト
+                            .icon(icon)
+                    )
+                }
+            }
+        }.addOnFailureListener { e ->
+            e.printStackTrace()
+        }
     }
 }
