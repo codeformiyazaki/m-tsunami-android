@@ -53,7 +53,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 val longitude = it.longitude
                 if (latitude != 0.0 && longitude != 0.0) {
                     val latLng = LatLng(latitude, longitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f))
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
                 }
             }
         })
@@ -61,13 +61,26 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         viewModel.buildings.observe(this, Observer {
             it.forEach{
                 val latLng = LatLng(it.lat, it.lng)
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16.0f))
                 val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_building)
                 googleMap.addMarker(
                     MarkerOptions()
                         .position(latLng)
-                        .title("Marker in Sydney")
-                        .snippet("Australian cities")
+                        .title(it.name)
+                        .snippet(it.altitude.toString() + it.structure + it.floor)
+                        .icon(icon)
+                )
+            }
+        })
+
+        viewModel.toilets.observe(this, Observer {
+            it.forEach{
+                val latLng = LatLng(it.lat, it.lng)
+                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_toilet)
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(it.name)
+                        .snippet(it.count.toString())
                         .icon(icon)
                 )
             }
@@ -128,6 +141,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
             viewModel.getLastLocation()
             viewModel.loadBuildings()
+            viewModel.loadToilets()
         }
     }
 }
