@@ -21,8 +21,7 @@ class AlertsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        alertsViewModel =
-            ViewModelProviders.of(this).get(AlertsViewModel::class.java)
+        alertsViewModel = ViewModelProviders.of(this).get(AlertsViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_alerts, container, false)
 
         val listView = root.findViewById(R.id.list_alerts) as ListView
