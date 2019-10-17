@@ -47,44 +47,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this@MapFragment)
 
-        viewModel.location.observe(this, Observer {
-            if (it != null) {
-                val latitude = it.latitude
-                val longitude = it.longitude
-                if (latitude != 0.0 && longitude != 0.0) {
-                    val latLng = LatLng(latitude, longitude)
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
-                }
-            }
-        })
-
-        viewModel.buildings.observe(this, Observer {
-            it.forEach{
-                val latLng = LatLng(it.lat, it.lng)
-                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_building)
-                googleMap.addMarker(
-                    MarkerOptions()
-                        .position(latLng)
-                        .title(it.name)
-                        .snippet(it.altitude.toString() + it.structure + it.floor)
-                        .icon(icon)
-                )
-            }
-        })
-
-        viewModel.toilets.observe(this, Observer {
-            it.forEach{
-                val latLng = LatLng(it.lat, it.lng)
-                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_toilet)
-                googleMap.addMarker(
-                    MarkerOptions()
-                        .position(latLng)
-                        .title(it.name)
-                        .snippet(it.count.toString())
-                        .icon(icon)
-                )
-            }
-        })
+        observe()
 
         return rootView
     }
@@ -131,6 +94,47 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d("m_tsunami_android", "onRequestPermissionsResult")
     }
 
+    private fun observe() {
+        viewModel.location.observe(this, Observer {
+            if (it != null) {
+                val latitude = it.latitude
+                val longitude = it.longitude
+                if (latitude != 0.0 && longitude != 0.0) {
+                    val latLng = LatLng(latitude, longitude)
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f))
+                }
+            }
+        })
+
+        viewModel.buildings.observe(this, Observer {
+            it.forEach{
+                val latLng = LatLng(it.lat, it.lng)
+                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_building)
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(it.name)
+                        .snippet(it.altitude.toString() + it.structure + it.floor)
+                        .icon(icon)
+                )
+            }
+        })
+
+        viewModel.webcams.observe(this, Observer {
+            it.forEach{
+                val latLng = LatLng(it.lat, it.lng)
+                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_webcam)
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(it.name)
+                        .snippet(it.url)
+                        .icon(icon)
+                )
+            }
+        })
+    }
+
     private fun checkPermission() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10) //REQUEST_LOCATION
@@ -142,6 +146,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             viewModel.getLastLocation()
             viewModel.loadBuildings()
             viewModel.loadToilets()
+            viewModel.loadWebcams()
         }
     }
 }
