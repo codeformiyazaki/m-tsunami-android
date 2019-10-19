@@ -77,7 +77,7 @@ class MapViewModel(app: Application): AndroidViewModel(app) {
 
         val client = retrofit.create(GoogleDirectionClient::class.java)
         val call: Call<Directions> =
-            client.getDirections(origin, destination, Constants.GOOGLE_API_KEY)
+            client.getDirections(origin, destination, "walking", Constants.GOOGLE_API_KEY)
         call.enqueue(object : Callback<Directions> {
             override fun onResponse(call: Call<Directions>, response: Response<Directions>) {
                 val directions = response.body()!!
