@@ -2,6 +2,7 @@ package net.lmlab.m_tsunami_android.ui.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,11 +15,16 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.PolyUtil
 import net.lmlab.m_tsunami_android.R
+import net.lmlab.m_tsunami_android.entity.Route
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var viewModel: MapViewModel
+
+    private var routePostions = ArrayList<LatLng>()
+    private lateinit var routePolylines: Polyline
 
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
@@ -27,8 +33,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (googleMap != null) {
             this.googleMap = googleMap
             this.googleMap.setOnMarkerClickListener { marker : Marker ->
-                Log.d("m_tsunami_android", "setOnMarkerClickListener")
-                return@setOnMarkerClickListener true
+                clearMarkersAndRoute()
+                val origin = googleMap.myLocation.latitude.toString() + "," + googleMap.myLocation.longitude.toString()
+                val destination = marker.position.latitude.toString() + "," + marker.position.longitude.toString()
+                viewModel.getDirections(origin, destination)
+                return@setOnMarkerClickListener false
             }
             checkPermission()
         }
@@ -114,7 +123,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(latLng)
                         .title(it.name)
-                        .snippet(it.altitude.toString() + it.structure + it.floor)
+                        .snippet("標高" + it.altitude.toString() + "m " + it.structure + " " + it.floor + "階")
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        .icon(icon)
+                )
+            }
+        })
+
+        viewModel.toilets.observe(this, Observer {
+            it.forEach{
+                val latLng = LatLng(it.lat, it.lng)
+                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_toilet)
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(it.name)
+                        .snippet("トイレ" + it.count.toString() + "個")
                         .icon(icon)
                 )
             }
@@ -128,10 +152,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(latLng)
                         .title(it.name)
-                        .snippet(it.url)
+                        .snippet("Powered by ii-nami.com")
                         .icon(icon)
                 )
             }
+        })
+
+        viewModel.route.observe(this, Observer {
+            setMarkersAndRoute(it)
         })
     }
 
@@ -141,12 +169,35 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         } else {
             // 許可済でないとクラッシュする
             googleMap.isMyLocationEnabled = true
-            googleMap.uiSettings.isMapToolbarEnabled = true
 
             viewModel.getLastLocation()
             viewModel.loadBuildings()
             viewModel.loadToilets()
             viewModel.loadWebcams()
+        }
+    }
+
+    private fun setMarkersAndRoute(route: Route) {
+        val startLatLng = LatLng(route.startLat!!, route.startLng!!)
+        val endLatLng = LatLng(route.endLat!!, route.endLng!!)
+        routePostions.add(startLatLng)
+        routePostions.add(endLatLng)
+
+        val polylineOptions = PolylineOptions().color(Color.BLUE)
+        val pointsList = PolyUtil.decode(route.overviewPolyline)
+        for (point in pointsList) {
+            polylineOptions.add(point)
+        }
+
+        routePolylines = googleMap.addPolyline(polylineOptions)
+
+        googleMap.animateCamera(viewModel.autoZoomLevel(routePostions))
+    }
+
+    private fun clearMarkersAndRoute() {
+        routePostions.clear()
+        if (::routePolylines.isInitialized) {
+            routePolylines.remove()
         }
     }
 }
