@@ -21,15 +21,14 @@ class AlertsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        alertsViewModel =
-            ViewModelProviders.of(this).get(AlertsViewModel::class.java)
+        alertsViewModel = ViewModelProviders.of(this).get(AlertsViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_alerts, container, false)
 
         val listView = root.findViewById(R.id.list_alerts) as ListView
         alertsViewModel.entities.observe(this, Observer {
             val adapter = AlertsListAdapter(requireContext(), it)
             listView.adapter = adapter
-            listView.setOnItemClickListener { parente, view, position, id ->
+            listView.setOnItemClickListener { _, _, position, _ ->
                 val entry = adapter.getItem(position)
                 val intent = Intent(activity, AlertDetailActivity::class.java)
                 intent.putExtra("uuid", entry.id)
