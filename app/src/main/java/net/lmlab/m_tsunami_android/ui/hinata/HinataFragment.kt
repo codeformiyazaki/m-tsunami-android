@@ -1,11 +1,16 @@
 package net.lmlab.m_tsunami_android.ui.hinata
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.ProgressBar
+import net.lmlab.m_tsunami_android.Constants.HINATA_URL
+import net.lmlab.m_tsunami_android.R
 
 class HinataFragment : Fragment() {
 
@@ -14,12 +19,28 @@ class HinataFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(net.lmlab.m_tsunami_android.R.layout.fragment_hinata, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_hinata, container, false)
 
-        val url = "https://kenzkenz.xsrv.jp/aaa/#13/131.44455/31.92127%3FS%3D1%26L%3D%5B%5B%7B%22id%22%3A%22shinsuishin%22%2C%22o%22%3A1%7D%2C%7B%22id%22%3A1%2C%22o%22%3A1%7D%5D%2C%5B%7B%22id%22%3A2%2C%22o%22%3A1%2C%22c%22%3A%22%22%7D%5D%2C%5B%7B%22id%22%3A4%2C%22o%22%3A1%2C%22c%22%3A%22%22%7D%5D%2C%5B%7B%22id%22%3A5%2C%22o%22%3A1%2C%22c%22%3A%22%22%7D%5D%5D"
-        val view = rootView.findViewById(net.lmlab.m_tsunami_android.R.id.webView) as WebView
-        view.settings.javaScriptEnabled = true
-        view.loadUrl(url)
+        val progressBar = rootView.findViewById(R.id.progressBar) as ProgressBar
+
+        val webView = rootView.findViewById(R.id.webView) as WebView
+        webView.webViewClient = object: WebViewClient() {
+
+            // ローディング開始時に呼ばれる
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                progressBar.visibility = View.VISIBLE
+            }
+
+            // ローディング終了時に呼ばれる
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                progressBar.visibility = View.GONE
+            }
+        }
+
+        webView.settings.javaScriptEnabled = true
+        webView.loadUrl(HINATA_URL)
 
         return rootView
     }
