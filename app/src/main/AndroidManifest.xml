@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.alerts.detail.AlertDetailActivity" />
+        <activity android:name=".ui.WebViewActivity" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR API KEY"/>
     </application>
 
 </manifest>

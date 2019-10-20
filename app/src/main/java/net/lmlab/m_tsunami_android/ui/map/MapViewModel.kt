@@ -92,8 +92,7 @@ class MapViewModel(app: Application): AndroidViewModel(app) {
                     ))
                 } else {
                     val context = getApplication<Application>().applicationContext
-                    Toast.makeText(context, R.string.route_failed, Toast.LENGTH_LONG)
-                        .show()
+                    Toast.makeText(context, R.string.route_failed, Toast.LENGTH_LONG).show()
                 }
             }
 
