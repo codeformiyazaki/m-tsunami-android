@@ -5,14 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.*
-import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.*
@@ -22,6 +21,10 @@ import net.lmlab.m_tsunami_android.entity.Route
 import net.lmlab.m_tsunami_android.ui.WebViewActivity
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+
+    companion object {
+        val REQUEST_LOCATION = 10
+    }
 
     private lateinit var viewModel: MapViewModel
 
@@ -104,11 +107,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapView.onLowMemory()
     }
 
-    // todo: なぜか呼ばれない
     // 許可を求めるダイアログで何らかのボタンが押されたときに発生するイベント
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("m_tsunami_android", "onRequestPermissionsResult")
+        if (requestCode != REQUEST_LOCATION) { return }
+
+        if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(context, R.string.location_permission_denied, Toast.LENGTH_LONG).show()
+            return
+        }
+
+        loadData()
     }
 
     private fun observe() {
@@ -132,7 +141,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         .position(latLng)
                         .title(it.name)
                         .snippet("標高" + it.altitude.toString() + "m " + it.structure + " " + it.floor + "階")
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                         .icon(icon)
                 )
             }
@@ -173,16 +181,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun checkPermission() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 10) //REQUEST_LOCATION
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION)
         } else {
-            // 許可済でないとクラッシュする
-            googleMap.isMyLocationEnabled = true
-
-            viewModel.getLastLocation()
-            viewModel.loadBuildings()
-            viewModel.loadToilets()
-            viewModel.loadWebcams()
+            loadData()
         }
+    }
+
+    private fun loadData() {
+        // 許可済でないとクラッシュする
+        googleMap.isMyLocationEnabled = true
+
+        viewModel.getLastLocation()
+        viewModel.loadBuildings()
+        viewModel.loadToilets()
+        viewModel.loadWebcams()
     }
 
     private fun setMarkersAndRoute(route: Route) {
