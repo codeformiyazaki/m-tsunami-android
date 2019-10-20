@@ -1,6 +1,7 @@
 package net.lmlab.m_tsunami_android.ui.map
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import net.lmlab.m_tsunami_android.R
 import net.lmlab.m_tsunami_android.entity.Route
+import net.lmlab.m_tsunami_android.ui.WebViewActivity
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -33,6 +35,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (googleMap != null) {
             this.googleMap = googleMap
             this.googleMap.setOnMarkerClickListener { marker : Marker ->
+                if (marker.snippet.startsWith("https")) {
+                    val intent = Intent(activity, WebViewActivity::class.java)
+                    intent.putExtra("url", marker.snippet)
+                    activity?.startActivity(intent)
+                    return@setOnMarkerClickListener false
+                }
                 clearMarkersAndRoute()
                 val origin = googleMap.myLocation.latitude.toString() + "," + googleMap.myLocation.longitude.toString()
                 val destination = marker.position.latitude.toString() + "," + marker.position.longitude.toString()
@@ -152,7 +160,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     MarkerOptions()
                         .position(latLng)
                         .title(it.name)
-                        .snippet("Powered by ii-nami.com")
+                        .snippet(it.url)
                         .icon(icon)
                 )
             }
