@@ -10,4 +10,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build debug APK
-        run: ./gradlew :app:assembleDebug
+      run: ./gradlew :app:assembleDebug
