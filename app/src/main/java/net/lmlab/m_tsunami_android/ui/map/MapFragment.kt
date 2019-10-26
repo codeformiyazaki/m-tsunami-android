@@ -174,6 +174,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
+        viewModel.shelters.observe(this, Observer {
+            it.forEach{
+                val latLng = LatLng(it.lat, it.lng)
+                val icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_shelter)
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(it.name)
+                        .snippet(it.address)
+                        .icon(icon)
+                )
+            }
+        })
+
         viewModel.route.observe(this, Observer {
             setMarkersAndRoute(it)
         })
@@ -195,6 +209,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         viewModel.loadBuildings()
         viewModel.loadToilets()
         viewModel.loadWebcams()
+        viewModel.loadShelters()
     }
 
     private fun setMarkersAndRoute(route: Route) {
