@@ -32,6 +32,7 @@ class MapViewModel(app: Application): AndroidViewModel(app) {
     val buildings: MutableLiveData<List<Building>> = MutableLiveData()
     val toilets: MutableLiveData<List<Toilet>> = MutableLiveData()
     val webcams: MutableLiveData<List<Webcam>> = MutableLiveData()
+    val shelters: MutableLiveData<List<Shelter>> = MutableLiveData()
     val route: MutableLiveData<Route> = MutableLiveData()
 
     fun getLastLocation() {
@@ -66,6 +67,14 @@ class MapViewModel(app: Application): AndroidViewModel(app) {
         val rows: List<List<String>> = csvReader().readAll(inputStream)
         val webcamList = rows.map { Webcam(it[0], it[1], it[2].toDouble(), it[3].toDouble()) }
         webcams.postValue(webcamList)
+    }
+
+    fun loadShelters() {
+        val context = getApplication<Application>().applicationContext
+        val inputStream = context.assets.open("csv/shelters_locations.csv")
+        val rows: List<List<String>> = csvReader().readAll(inputStream)
+        val shelterList = rows.map { Shelter(it[0], it[1], it[2].toDouble(), it[3].toDouble()) }
+        shelters.postValue(shelterList)
     }
 
     fun getDirections(origin: String, destination: String) {
