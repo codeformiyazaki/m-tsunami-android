@@ -59,6 +59,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         val rootView = inflater.inflate(R.layout.fragment_map, container, false)
 
