@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">宮崎津波防災</string>
-    <string name="title_alerts">Alerts</string>
+    <string name="title_alerts">宮崎津波防災</string>
     <string name="title_hinata">宮崎津波防災</string>
-    <string name="title_map">Map</string>
+    <string name="title_map">宮崎津波防災</string>
     <string name="title_info">Info</string>
+
+    <string name="tab_title_alerts">Alerts</string>
+    <string name="tab_title_hinata">GIS</string>
+    <string name="tab_title_map">Map</string>
+    <string name="tab_title_info">Info</string>
+
+    <string name="map_settings_icon_menu_title">アイコンの設定</string>
 
     <string name="info_desc">避難ビルや避難所・トイレのマーカーをクリックすると、現在位置からの経路を表示します。あくまで目安としてお使いください。災害時にも通行できることを保証するものではありません。\n
 本アプリケーションは Code for Miyazaki の有志によって作成され、MITライセンスでコードが公開されています。\n
@@ -11,4 +18,12 @@
 
     <string name="route_failed">ルートを取得できませんでした</string>
     <string name="location_permission_denied">現在地を取得するため位置情報の利用を許可してください</string>
+    <string name="title_activity_map_settings">アイコンの設定</string>
+
+    <!-- Preference Titles -->
+    <string name="map_settings_icon_header">チェックを入れたアイコンが地図上に表示されます</string>
+    <string name="map_settings_icon_building">津波避難ビル</string>
+    <string name="map_settings_icon_toilet">災害時に稼働するマンホールトイレ</string>
+    <string name="map_settings_icon_webcam">海岸線を監視するウェブカメラ</string>
+    <string name="map_settings_icon_shelter">指定避難所</string>
 </resources>
