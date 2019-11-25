@@ -21,21 +21,25 @@
         <CheckBoxPreference
             app:key="building"
             app:title="@string/map_settings_icon_building"
+            app:icon="@drawable/ic_building"
             app:defaultValue="true" />
 
         <CheckBoxPreference
             app:key="toilet"
             app:title="@string/map_settings_icon_toilet"
+            app:icon="@drawable/ic_toilet"
             app:defaultValue="true"/>
 
         <CheckBoxPreference
             app:key="webcam"
             app:title="@string/map_settings_icon_webcam"
+            app:icon="@drawable/ic_webcam"
             app:defaultValue="true"/>
 
         <CheckBoxPreference
             app:key="shelter"
             app:title="@string/map_settings_icon_shelter"
+            app:icon="@drawable/ic_shelter"
             app:defaultValue="true"/>
 
     </PreferenceCategory>
