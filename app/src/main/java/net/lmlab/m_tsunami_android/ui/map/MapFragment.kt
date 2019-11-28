@@ -5,9 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.preference.PreferenceManager
+import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -19,6 +18,7 @@ import com.google.maps.android.PolyUtil
 import net.lmlab.m_tsunami_android.R
 import net.lmlab.m_tsunami_android.entity.Route
 import net.lmlab.m_tsunami_android.ui.WebViewActivity
+import net.lmlab.m_tsunami_android.ui.settings.MapSettingsActivity
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -29,6 +29,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
 
     private var routePostions = ArrayList<LatLng>()
+    private var isReadyGoogleMap = false
     private lateinit var routePolylines: Polyline
 
     private lateinit var mapView: MapView
@@ -37,6 +38,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap?) {
         if (googleMap != null) {
             this.googleMap = googleMap
+            isReadyGoogleMap = true
             this.googleMap.setOnMarkerClickListener { marker : Marker ->
                 if (marker.snippet.startsWith("https")) {
                     val intent = Intent(activity, WebViewActivity::class.java)
@@ -59,6 +61,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
+
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         val rootView = inflater.inflate(R.layout.fragment_map, container, false)
 
@@ -72,6 +76,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return rootView
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.map_settings_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item?.itemId) {
+            R.id.map_settings_icon -> {
+                val intent = Intent(activity, MapSettingsActivity::class.java)
+                activity?.startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onStart() {
         super.onStart()
         mapView.onStart()
@@ -80,6 +99,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        if (isReadyGoogleMap) {
+            googleMap.clear()
+//            clearMarkersAndRoute()
+            loadData()
+        }
     }
 
     override fun onPause() {
@@ -206,10 +230,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         googleMap.isMyLocationEnabled = true
 
         viewModel.getLastLocation()
-        viewModel.loadBuildings()
-        viewModel.loadToilets()
-        viewModel.loadWebcams()
-        viewModel.loadShelters()
+
+        val preference = PreferenceManager.getDefaultSharedPreferences(context)
+        if (preference.getBoolean("building", true)) viewModel.loadBuildings()
+        if (preference.getBoolean("toilet", true)) viewModel.loadToilets()
+        if (preference.getBoolean("webcam", true)) viewModel.loadWebcams()
+        if (preference.getBoolean("shelter", true)) viewModel.loadShelters()
     }
 
     private fun setMarkersAndRoute(route: Route) {
